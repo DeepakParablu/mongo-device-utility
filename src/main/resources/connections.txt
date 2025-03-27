@@ -1,0 +1,5 @@
+mongotemplate.username=[userName]
+mongotemplate.password=[password]
+mongotemplate.host=[host ip address]
+mongotemplate.port=[port]
+mongotemplate.db=[database name]
