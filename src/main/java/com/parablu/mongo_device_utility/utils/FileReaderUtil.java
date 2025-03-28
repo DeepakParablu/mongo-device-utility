@@ -40,12 +40,12 @@ public class FileReaderUtil {
 					if (parts.length == 2) {
 						connectionDetails.put(parts[0].trim(), parts[1].trim());
 					} else {
-						logger.info("Invalid line format in connection file: {}", line);
+						logger.error("Invalid line format in connection file: {}", line);
 					}
 				}
 			});
 		} catch (IOException e) {
-			logger.info("Failed to read connection details from file: {}", filePath, e);
+			logger.error("Failed to read connection details from file: {}", filePath, e);
 			throw e;
 		}
 

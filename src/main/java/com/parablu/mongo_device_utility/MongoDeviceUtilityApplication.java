@@ -52,19 +52,19 @@ public class MongoDeviceUtilityApplication implements CommandLineRunner {
 		}
 
 		if (connectionFilePath == null || connectionFilePath.trim().isEmpty()) {
-			logger.info(
+			logger.error(
 					"Connection file path is not provided. Please provide a valid file path using --connection.file.path argument.");
 			throw new IllegalArgumentException("Connection file path is required.");
 		}
 
 		File connectionFile = new File(connectionFilePath);
 		if (!connectionFile.exists()) {
-			logger.info("Connection file does not exist at path: {}", connectionFilePath);
+			logger.error("Connection file does not exist at path: {}", connectionFilePath);
 			throw new IllegalArgumentException("Connection file not found.");
 		}
 
 		if (!connectionFile.canRead()) {
-			logger.info("Connection file at path {} is not readable.", connectionFilePath);
+			logger.error("Connection file at path {} is not readable.", connectionFilePath);
 			throw new IllegalArgumentException("Cannot read the connection file.");
 		}
 
@@ -74,7 +74,7 @@ public class MongoDeviceUtilityApplication implements CommandLineRunner {
 		try {
 			deviceService.syncDevicesData(connectionFilePath);
 		} catch (Exception e) {
-			logger.info("An error occurred during the sync process.", e);
+			logger.error("An error occurred during the sync process.", e);
 		}
 	}
 }

@@ -53,7 +53,7 @@ public class MongoConnectionManager {
 		// Check if the file exists and is readable
 		File file = new File(filePath);
 		if (!file.exists() || !file.canRead()) {
-			logger.info("Connection file {} does not exist or is not readable.", filePath);
+			logger.error("Connection file {} does not exist or is not readable.", filePath);
 			throw new IllegalArgumentException("Invalid connection file path.");
 		}
 
@@ -62,7 +62,7 @@ public class MongoConnectionManager {
 
 		// Check if connection details are loaded properly
 		if (this.connectionDetails.isEmpty()) {
-			logger.info("No valid connection details found in file: {}", filePath);
+			logger.error("No valid connection details found in file: {}", filePath);
 			throw new IllegalArgumentException("No valid connection details found.");
 		}
 
@@ -80,7 +80,7 @@ public class MongoConnectionManager {
 				String dbName = connectionDetails.get(clientName + ".db");
 
 				if (host == null || port == null || username == null || password == null || dbName == null) {
-					logger.info("Missing connection details for client: {}", clientName);
+					logger.error("Missing connection details for client: {}", clientName);
 					throw new IllegalArgumentException("Missing connection details for client: " + clientName);
 				}
 
@@ -93,7 +93,7 @@ public class MongoConnectionManager {
 				return new MongoTemplate(new SimpleMongoClientDatabaseFactory(mongoClient, dbName));
 
 			} catch (Exception e) {
-				logger.info("Failed to create MongoTemplate for client: {}", clientName, e);
+				logger.error("Failed to create MongoTemplate for client: {}", clientName, e);
 				throw new RuntimeException("Failed to create MongoTemplate for client: " + clientName, e);
 			}
 		});
