@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.parablu</groupId>
 	<artifactId>mongo-device-utility</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>mongo-device-utility</name>
 	<description>Creating a standalone Spring Boot utility project that connects to a MongoDB database and processes device status.</description>
 	<url/>
@@ -48,11 +48,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-logging</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

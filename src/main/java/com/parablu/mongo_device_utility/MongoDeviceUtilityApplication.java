@@ -22,7 +22,6 @@ import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -36,9 +35,6 @@ public class MongoDeviceUtilityApplication implements CommandLineRunner {
 	@Autowired
 	private DeviceService deviceService;
 
-	@Value("${connection.file.path:}")
-	private String connectionFilePath;
-
 	public static void main(String[] args) {
 		SpringApplication.run(MongoDeviceUtilityApplication.class, args);
 	}
@@ -47,8 +43,17 @@ public class MongoDeviceUtilityApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		logger.info("Starting MongoDeviceUtilityApplication...");
 
+		// Retrieve the connection file path from the command-line arguments
+		String connectionFilePath = null;
+		for (String arg : args) {
+			if (arg.startsWith("--connection.file.path=")) {
+				connectionFilePath = arg.split("=")[1];
+			}
+		}
+
 		if (connectionFilePath == null || connectionFilePath.trim().isEmpty()) {
-			logger.info("Connection file path is not provided. Please provide a valid file path.");
+			logger.info(
+					"Connection file path is not provided. Please provide a valid file path using --connection.file.path argument.");
 			throw new IllegalArgumentException("Connection file path is required.");
 		}
 
