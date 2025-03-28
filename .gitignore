@@ -35,3 +35,4 @@ build/
 
 logs/mongo-device-utility.log
 logs/mongo-device-utility.log .2025-03-27.0.gz
+logs/*
