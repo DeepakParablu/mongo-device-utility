@@ -41,11 +41,12 @@ public class DeviceService {
 	private MongoConnectionManager connectionManager;
 
 	// Counters
-	int totalUpdatedDevices = 0;
-	int totalUpdatedBlockedFields = 0;
-	int totalUpdatedDeletedFields = 0;
+	private int totalUpdatedDevices = 0;
+	private int totalUpdatedBlockedFields = 0;
+	private int totalUpdatedDeletedFields = 0;
 
 	public void syncDevicesData(String connectionFilePath) {
+		long startTime = System.currentTimeMillis();
 		logger.info("STARTED: Syncing devices data with connection file:{}", connectionFilePath);
 
 		try {
@@ -106,8 +107,8 @@ public class DeviceService {
 		} catch (Exception e) {
 			logger.info("Error occurred while syncing data", e);
 		}
-
-		logger.info("COMPLETED: Syncing devices data");
+		long endTime = System.currentTimeMillis();
+		logger.info("COMPLETED: Syncing devices data"	+ " | Time taken: {} seconds", (endTime - startTime) / 1000);
 		logger.info("Total devices updated: {}", totalUpdatedDevices);
 		logger.info("Total fields updated, Bolcked: {} and Deleted: {}", totalUpdatedBlockedFields, totalUpdatedDeletedFields);
 	}
