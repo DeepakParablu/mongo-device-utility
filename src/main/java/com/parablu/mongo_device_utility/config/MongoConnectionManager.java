@@ -46,8 +46,8 @@ public class MongoConnectionManager {
 		// Default file path for connection details
 		String filePath = "src/main/resources/connections.txt";
 
-		if (args.containsOption("connection.file.path")) {
-			filePath = args.getOptionValues("connection.file.path").get(0);
+		if (args.getNonOptionArgs().size() > 0) {
+			filePath = args.getNonOptionArgs().get(0);
 		}
 
 		// Check if the file exists and is readable
@@ -79,6 +79,10 @@ public class MongoConnectionManager {
 				String password = connectionDetails.get(clientName + ".password");
 				String dbName = connectionDetails.get(clientName + ".db");
 
+				// Set default values if host or port is missing
+	            host = (host == null || host.isEmpty()) ? "localhost" : host;
+	            port = (port == null || port.isEmpty()) ? "27017" : port;
+	            
 				if (host == null || port == null || username == null || password == null || dbName == null) {
 					logger.error("Missing connection details for client: {}", clientName);
 					throw new IllegalArgumentException("Missing connection details for client: " + clientName);

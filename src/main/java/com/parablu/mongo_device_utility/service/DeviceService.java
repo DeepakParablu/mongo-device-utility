@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -37,21 +36,24 @@ public class DeviceService {
 
 	private static final Logger logger = LoggerFactory.getLogger(DeviceService.class);
 
-	@Autowired
-	private MongoConnectionManager connectionManager;
+	private final MongoConnectionManager connectionManager;
+	private final MongoTemplate mongoTemplate;
 
 	// Counters
 	private int totalUpdatedDevices = 0;
 	private int totalUpdatedBlockedFields = 0;
 	private int totalUpdatedDeletedFields = 0;
+	
+	public DeviceService(MongoConnectionManager connectionManager) {
+		this.connectionManager = connectionManager;
+		this.mongoTemplate = connectionManager.getMongoTemplateForClient("mongotemplate");
+	}
 
 	public void syncDevicesData(String connectionFilePath) {
 		long startTime = System.currentTimeMillis();
 		logger.info("STARTED: Syncing devices data with connection file:{}", connectionFilePath);
 
-		try {
-			MongoTemplate mongoTemplate = connectionManager.getMongoTemplateForClient("mongotemplate");
-			
+		try {	
 			List<Device> devices = mongoTemplate.findAll(Device.class);
 
 			if (devices.isEmpty()) {
@@ -74,27 +76,21 @@ public class DeviceService {
 
 				// Update only relevant fields if necessary
 				if (device.isBlocked() != backupOverview.isDeviceBolcked()) {
-					update.set("isDeviceBolcked", device.isBlocked());
-					updated = true;
-					logger.info(
-					    "Updated DEVICE_BACKUP_OVERVIEW for UUID: {} | isDeviceBlocked field updated from: {} to: {} (in DEVICE: {})",
-					    device.getDeviceUUID(),
-					    backupOverview.isDeviceBolcked(),    // Previous value in DEVICE_BACKUP_OVERVIEW
-					    device.isBlocked(),          // Updated value from DEVICE
-					    device.isBlocked()           // Showing the updated value again for clarity
-					);
+					try{
+						update.set("isDeviceBolcked", device.isBlocked());
+						updated = true;
+					}catch(Exception e){
+						logger.error("Error occurred while setting isDeviceBolcked field for device UUID: {}", device.getDeviceUUID(), e);
+					}
 				}
 
 				if (device.isDeleted() != backupOverview.isDeviceDeleted()) {
-					update.set("isDeviceDeleted", device.isDeleted());
-					updated = true;
-					logger.info(
-					    "Updated DEVICE_BACKUP_OVERVIEW for UUID: {} | isDeviceDeleted field updated from: {} to: {} (in DEVICE: {})",
-					    device.getDeviceUUID(),
-					    backupOverview.isDeviceDeleted(),
-					    device.isDeleted(),
-					    device.isDeleted()
-					);
+					try{
+						update.set("isDeviceDeleted", device.isDeleted());
+						updated = true;
+					}catch(Exception e){
+						logger.error("Error occurred while setting isDeviceDeleted field for device UUID: {}", device.getDeviceUUID(), e);
+					}
 				}
 
 				// Update the database only if there are changes
@@ -102,11 +98,25 @@ public class DeviceService {
 					// Update the relevant device backup overview record
 					mongoTemplate.updateFirst(query, update, DeviceBackupOverview.class);
 					
-					// After updating the database, update the counters
+					// After updating the database, update the counters and log the updates
 					if (device.isBlocked() != backupOverview.isDeviceBolcked()) {
+						logger.info(
+							    "Updated DEVICE_BACKUP_OVERVIEW for UUID: {} | isDeviceBlocked field updated from: {} to: {} (in DEVICE: {})",
+							    device.getDeviceUUID(),
+							    backupOverview.isDeviceBolcked(),    // Previous value in DEVICE_BACKUP_OVERVIEW
+							    device.isBlocked(),          // Updated value from DEVICE
+							    device.isBlocked()           // Showing the updated value again for clarity
+							);
 						totalUpdatedBlockedFields++;
 					}
 					if (device.isDeleted() != backupOverview.isDeviceDeleted()) {
+						logger.info(
+							    "Updated DEVICE_BACKUP_OVERVIEW for UUID: {} | isDeviceDeleted field updated from: {} to: {} (in DEVICE: {})",
+							    device.getDeviceUUID(),
+							    backupOverview.isDeviceDeleted(),
+							    device.isDeleted(),
+							    device.isDeleted()
+							);
 						totalUpdatedDeletedFields++;
 					}
 					totalUpdatedDevices++;

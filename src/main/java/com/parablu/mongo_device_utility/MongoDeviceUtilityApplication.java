@@ -43,17 +43,17 @@ public class MongoDeviceUtilityApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		logger.info("Starting MongoDeviceUtilityApplication...");
 
-		// Retrieve the connection file path from the command-line arguments
-		String connectionFilePath = null;
-		for (String arg : args) {
-			if (arg.startsWith("--connection.file.path=")) {
-				connectionFilePath = arg.split("=")[1];
-			}
+		if (args.length == 0) {
+			logger.error("No connection file path provided.");
+			throw new IllegalArgumentException("Please provide the connection file path as the first argument.");
 		}
+
+		// Get the connection file path from argument
+		String connectionFilePath = args[0];
 
 		if (connectionFilePath == null || connectionFilePath.trim().isEmpty()) {
 			logger.error(
-					"Connection file path is not provided. Please provide a valid file path using --connection.file.path argument.");
+					"Connection file path is not provided. Please provide a valid file path argument.");
 			throw new IllegalArgumentException("Connection file path is required.");
 		}
 

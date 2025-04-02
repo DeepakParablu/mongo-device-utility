@@ -6,7 +6,7 @@ This utility is used to sync device data between a MongoDB collection `DEVICE` a
 
 Before you run the application, make sure you have the following:
 
-- Java 21
+- Java `JDK 8`
 - Maven 3.*.*
 - MongoDB client set up and running
 
@@ -36,6 +36,7 @@ Follow these steps to build and run the application:
 ### Step 1: Build the Project
 
 First, navigate to the project directory and run the following Maven command to build the project and skip tests during the build process:
+
 ```bash
 mvn clean package
 ```
@@ -43,16 +44,21 @@ mvn clean package
 ```bash
 mvn clean package -DskipTests
 ```
-This command will compile the project, package it into a JAR file, and place it in the `target/ directory` of your project.
+This command will compile the project, package it into a `JAR` file, and place it in the `target/ directory` of your project.
 
 ### Step 2: Run the Application
 After the build completes, you can run the application using the following command:
 
 ```bash
-java -jar target/mongo-device-utility-0.0.1.jar --connection.file.path="C:\path\to\connections.txt"
+java -jar target/mongo-device-utility-0.0.1.jar connections.txt
+```
+- `OR`
+
+```bash
+java -jar target/mongo-device-utility-0.0.1.jar "C:\path\to\connections.txt"
 ```
 
-Make sure to replace `"C:\path\to\connections.txt"` with the correct path to your `connections.txt` file if it's located elsewhere.
+Make sure to replace `"C:\path\to\connections.txt"` with the correct path to your `connections.txt` file if it's located elsewhere. If your `connection.txt`  present in same `folder/directory` give only filename `connections.txt`. 
 
 
 # Running the `.jar` File
@@ -69,16 +75,22 @@ Once you have Java installed, you can run the application directly from the comm
 - Run the `application` by executing the following command:
 
     ```bash
-    java -jar mongo-device-utility-0.0.1.jar --connection.file.path="C:\path\to\connections.txt"
+    java -jar mongo-device-utility-0.0.1.jar connections.txt
     ```
-> Make sure to replace the path `"C:\path\to\connections.txt"` or `"/path/to/connections.txt"` with the actual path to your `connections.txt` file.
+
+    - `OR`
+
+    ```bash
+    java -jar mongo-device-utility-0.0.1.jar "C:\path\to\connections.txt"
+    ```
+> Make sure to replace the path `"C:\path\to\connections.txt"` or `"/path/to/connections.txt"` with the actual path to your `connections.txt` file. If your `connection.txt`  present in same `folder/directory` give only filename `connections.txt`. 
 
 ### Troubleshooting
 - If you encounter any issues, check the following:
 
 - Connection Details: Ensure that the `MongoDB server` is running and the details in `connections.txt` are correct.
 
-- Java Version: Make sure you're running Java 21 or later.
+- Java Version: Make sure you're running Java JDK 8.
 
 - Maven Version: Ensure you're using Maven 3.. or later.
 
